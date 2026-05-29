@@ -3,6 +3,6 @@
 body {
   margin: 0;
   font-family: 'Comfortaa', cursive, sans-serif;
-  background: linear-gradient(135deg, #fce4ec 0%, #fde2ff 100%);
+  background: url('assets/background.png') center/cover no-repeat fixed;
   min-height: 100vh;
 }
