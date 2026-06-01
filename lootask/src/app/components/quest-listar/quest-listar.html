@@ -8,7 +8,11 @@
     
     @for (q of listaDeQuests(); track q.id) {
       <div style="padding: 10px; background: white; margin-bottom: 10px; border-radius: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;" (click)="questSelecionada = q">
-        <span>{{ q.texto }}</span>
+        <span [style.textDecoration]="q.feita ? 'line-through' : 'none'" 
+      [style.color]="q.feita ? '#a0a0a0' : '#4a148c'"
+      style="transition: all 0.3s ease;">
+       {{ q.texto }}
+</span>
         <span style="background: #f8bbd0; color: #d81b60; padding: 2px 8px; border-radius: 20px; font-size: 14px;">+{{ q.xp }} XP</span>
       </div>
     }
@@ -16,4 +20,6 @@
 
   <br>
   <app-quest-detalhar [quest]="questSelecionada"></app-quest-detalhar>
+  <br>
+  <app-quest-alterar [(quest)]="questSelecionada"></app-quest-alterar>
 </div>

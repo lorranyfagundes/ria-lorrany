@@ -2,11 +2,12 @@ import { Component, signal } from '@angular/core';
 import { Quest } from '../../models/quest.models';
 import { QuestIncluirComponent } from '../quest-incluir/quest-incluir';
 import { QuestDetalharComponent } from '../quest-detalhar/quest-detalhar';
+import { QuestAlterarComponent } from '../quest-alterar/quest-alterar';
 
 @Component({
   selector: 'app-quest-listar',
   standalone: true,
-  imports: [QuestIncluirComponent, QuestDetalharComponent],
+  imports: [QuestIncluirComponent, QuestDetalharComponent, QuestAlterarComponent],
   templateUrl: './quest-listar.html',
   styleUrl: './quest-listar.scss'
 })
