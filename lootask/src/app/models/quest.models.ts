@@ -1,6 +1,6 @@
 export interface Quest {
-  id?: number;          // id pcional
-  texto: string;       //descrição
+  id?: number;         
+  texto: string;       
   xp: number; 
   feita: boolean;    
 }

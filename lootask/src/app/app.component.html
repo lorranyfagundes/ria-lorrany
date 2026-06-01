@@ -1,0 +1,16 @@
+<div style="padding: 20px; max-width: 500px; margin: 0 auto;">
+  <h1 style="text-align: center; color: #d81b60;">⚔️ Lootask</h1>
+  
+  <app-quest-incluir (aoIncluir)="adicionarQuest($event)"></app-quest-incluir>
+
+  <app-quest-listar 
+    [quests]="listaDeQuests()" 
+    (aoSelecionar)="questSelecionada = $event">
+  </app-quest-listar>
+
+  <br>
+  
+  <app-quest-detalhar [quest]="questSelecionada"></app-quest-detalhar>
+
+  <app-quest-alterar [(quest)]="questSelecionada"></app-quest-alterar>
+</div>

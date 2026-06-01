@@ -1,25 +1,17 @@
-<div style="padding: 20px; max-width: 500px; margin: 0 auto;">
-  <h1 style="text-align: center; color: #d81b60;">⚔️ Lootask</h1>
+<div style="background: rgba(255, 255, 255, 0.7); padding: 20px; border-radius: 20px;">
+  <h2 style="color: #4a148c; margin-top: 0;">Lista de Quests</h2>
   
-  <app-quest-incluir (aoIncluir)="adicionarQuest($event)"></app-quest-incluir>
-
-  <div style="background: rgba(255, 255, 255, 0.7); padding: 20px; border-radius: 20px;">
-    <h2 style="color: #4a148c; margin-top: 0;">Lista de Quests</h2>
-    
-    @for (q of listaDeQuests(); track q.id) {
-      <div style="padding: 10px; background: white; margin-bottom: 10px; border-radius: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;" (click)="questSelecionada = q">
-        <span [style.textDecoration]="q.feita ? 'line-through' : 'none'" 
-      [style.color]="q.feita ? '#a0a0a0' : '#4a148c'"
-      style="transition: all 0.3s ease;">
-       {{ q.texto }}
-</span>
-        <span style="background: #f8bbd0; color: #d81b60; padding: 2px 8px; border-radius: 20px; font-size: 14px;">+{{ q.xp }} XP</span>
-      </div>
-    }
-  </div>
-
-  <br>
-  <app-quest-detalhar [quest]="questSelecionada"></app-quest-detalhar>
-  <br>
-  <app-quest-alterar [(quest)]="questSelecionada"></app-quest-alterar>
+  @for (q of quests(); track q.id) {
+    <div style="padding: 10px; background: white; margin-bottom: 10px; border-radius: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;" 
+         (click)="aoSelecionar.emit(q)">
+      
+      <span [style.textDecoration]="q.feita ? 'line-through' : 'none'" 
+            [style.color]="q.feita ? '#a0a0a0' : '#4a148c'"
+            style="transition: all 0.3s ease;">
+        {{ q.texto }}
+      </span>
+      
+      <span style="background: #f8bbd0; color: #d81b60; padding: 2px 8px; border-radius: 20px; font-size: 14px;">+{{ q.xp }} XP</span>
+    </div>
+  }
 </div>
