@@ -1,30 +1,22 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { QuestListarComponent } from './components/quest-listar/quest-listar';
 import { QuestIncluirComponent } from './components/quest-incluir/quest-incluir';
 import { QuestDetalharComponent } from './components/quest-detalhar/quest-detalhar';
 import { QuestAlterarComponent } from './components/quest-alterar/quest-alterar';
-import { Quest } from './models/quest.models';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
-    QuestListarComponent, 
-    QuestIncluirComponent, 
-    QuestDetalharComponent, 
-    QuestAlterarComponent
-  ],
-  templateUrl: './app.component.html'
+  imports: [QuestListarComponent, QuestIncluirComponent, QuestDetalharComponent, QuestAlterarComponent],
+  template: `
+    <div style="padding: 20px; max-width: 500px; margin: 0 auto;">
+      <h1 style="text-align: center; color: #d81b60;">⚔️ Lootask</h1>
+      <app-quest-incluir></app-quest-incluir>
+      <app-quest-listar></app-quest-listar>
+      <br>
+      <app-quest-detalhar></app-quest-detalhar>
+      <app-quest-alterar></app-quest-alterar>
+    </div>
+  `
 })
-export class AppComponent {
-  listaDeQuests = signal<Quest[]>([
-    { id: 1, texto: 'Fazer post pro SAM sobre @property do python', xp: 50, feita: false },
-    { id: 2, texto: 'Pesquisar sobre properties', xp: 30, feita: true }
-  ]);
-
-  questSelecionada: Quest | null = null;
-
-  adicionarQuest(novaQuest: Quest) {
-    this.listaDeQuests.update(quests => [...quests, { ...novaQuest, id: Date.now() }]);
-  }
-}
+export class AppComponent {}

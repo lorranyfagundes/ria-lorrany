@@ -1,9 +1,9 @@
 <div style="background: rgba(255, 255, 255, 0.7); padding: 20px; border-radius: 20px;">
   <h2 style="color: #4a148c; margin-top: 0;">Lista de Quests</h2>
   
-  @for (q of quests(); track q.id) {
+  @for (q of questService.listaDeQuests(); track q.id) {
     <div style="padding: 10px; background: white; margin-bottom: 10px; border-radius: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;" 
-         (click)="aoSelecionar.emit(q)">
+         (click)="selecionar(q)">
       
       <span [style.textDecoration]="q.feita ? 'line-through' : 'none'" 
             [style.color]="q.feita ? '#a0a0a0' : '#4a148c'"

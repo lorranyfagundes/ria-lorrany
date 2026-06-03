@@ -1,6 +1,7 @@
-import { Component, output, signal } from '@angular/core'; 
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Quest } from '../../models/quest.models';
+import { QuestService } from '../../services/quest';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ButtonModule } from 'primeng/button';
@@ -26,18 +27,17 @@ import { ButtonModule } from 'primeng/button';
   `
 })
 export class QuestIncluirComponent {
-  aoIncluir = output<Quest>();
+  questService = inject(QuestService);  
   novaQuestTexto = signal<string>('');
   novaQuestXp = signal<number | null>(null);
 
   enviar() {
     if (this.novaQuestTexto().trim()) {
-      this.aoIncluir.emit({
+      this.questService.adicionarQuest({
         texto: this.novaQuestTexto(),
         xp: this.novaQuestXp() || 0,
-        feita: false 
+        feita: false
       });
-
       this.novaQuestTexto.set('');
       this.novaQuestXp.set(null);
     }

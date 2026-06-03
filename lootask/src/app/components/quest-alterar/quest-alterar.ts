@@ -1,47 +1,72 @@
-import { Component, model } from '@angular/core';
+import { Component, inject, effect, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Quest } from '../../models/quest.models';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputNumberModule } from 'primeng/inputnumber';
+import { QuestService } from '../../services/quest';
+import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
-import { ButtonModule } from 'primeng/button'; 
+import { InputTextModule } from 'primeng/inputtext';   
+import { InputNumberModule } from 'primeng/inputnumber';
 
 @Component({
   selector: 'app-quest-alterar',
   standalone: true,
-  imports: [FormsModule, InputTextModule, InputNumberModule, CheckboxModule, ButtonModule],
+  imports: [FormsModule, ButtonModule, CheckboxModule, InputTextModule, InputNumberModule], // ✨ Adicionados aqui
   template: `
-    @if (quest()) {
-      <div style="background: #fff; padding: 20px; border-radius: 15px; border: 3px solid #ba68c8; margin-top: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-        <h3 style="color: #6a1b9a; margin-top: 0;">🔮 Editar Quest (Alterar)</h3>
+    @if (questService.questSelecionada(); as q) {
+      <div style="background: #f3e5f5; padding: 20px; border-radius: 15px; border: 3px solid #e1bee7; margin-top: 15px;">
+        <h3 style="color: #4a148c; margin-top: 0;">🛠️ Editar / Remover Quest</h3>
         
         <div style="margin-bottom: 12px;">
-          <label style="display:block; font-weight:bold; color: #6a1b9a; margin-bottom: 5px;">Missão:</label>
-          <input type="text" pInputText [(ngModel)]="quest()!.texto" style="width: 100%;" />
+          <input type="text" pInputText [ngModel]="textoTemp()" (ngModelChange)="textoTemp.set($event)" style="width: 100%;"/>
         </div>
-
+        
         <div style="margin-bottom: 12px;">
-          <label style="display:block; font-weight:bold; color: #6a1b9a; margin-bottom: 5px;">Recompensa (XP):</label>
-          <p-inputNumber [(ngModel)]="quest()!.xp" style="width: 100%;" [min]="0"></p-inputNumber>
+          <p-inputNumber [ngModel]="xpTemp()" (ngModelChange)="xpTemp.set($event)" placeholder="XP de recompensa" style="width: 100%;"></p-inputNumber>
         </div>
-
-        <div style="display: flex; align-items: center; gap: 10px; margin-top: 15px; margin-bottom: 20px;">
-          <p-checkbox [(ngModel)]="quest()!.feita" [binary]="true" inputId="feita"></p-checkbox>
-          <label for="feita" style="font-weight: bold; cursor: pointer; color: #4a148c;">✨ Concluída (Loot Coletado!)</label>
+        
+        <div style="margin-bottom: 15px;">
+          <label style="display: flex; align-items: center; gap: 8px; color: #4a148c; cursor: pointer;">
+            <p-checkbox [binary]="true" [ngModel]="feitaTemp()" (ngModelChange)="feitaTemp.set($event)"></p-checkbox>
+            Marcar como concluída
+          </label>
         </div>
-
-        <div style="display: flex; gap: 10px; justify-content: flex-end;">
-          <button pButton label="Fechar" icon="pi pi-times" class="p-button-text p-button-secondary" (click)="fechar()"></button>
-          <button pButton label="Concluir Edição" icon="pi pi-check" class="p-button-purple" (click)="fechar()"></button>
+        
+        <div style="display: flex; gap: 10px;">
+          <button pButton label="Salvar Alterações" icon="pi pi-check" class="p-button-success" (click)="salvar(q.id)"></button>
+          
+          <button pButton label="Excluir Missão" icon="pi pi-trash" class="p-button-danger" style="background: #d32f2f;" (click)="deletar(q.id)"></button>
         </div>
       </div>
     }
   `
 })
 export class QuestAlterarComponent {
-  quest = model<Quest | null>(null);
+  questService = inject(QuestService);
 
-  fechar() {
-    this.quest.set(null);
+  textoTemp = signal('');
+  xpTemp = signal<number | null>(null); // ✨ Criado o signal do XP
+  feitaTemp = signal(false);
+
+  constructor() {
+    effect(() => {
+      const q = this.questService.questSelecionada();
+      if (q) {
+        this.textoTemp.set(q.texto);
+        this.xpTemp.set(q.xp);
+        this.feitaTemp.set(q.feita);
+      }
+    });
+  }
+
+  salvar(id: any) {
+    this.questService.atualizarQuest({
+      id: id,
+      texto: this.textoTemp(),
+      xp: this.xpTemp() || 0, 
+      feita: this.feitaTemp()
+    });
+  }
+
+  deletar(id: any) {
+    this.questService.removerQuest(id);
   }
 }

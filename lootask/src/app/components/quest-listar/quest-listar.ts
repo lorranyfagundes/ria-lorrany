@@ -1,15 +1,16 @@
-import { Component, input, output } from '@angular/core';
-import { Quest } from '../../models/quest.models';
+import { Component, inject } from '@angular/core';
+import { QuestService } from '../../services/quest';
 
 @Component({
   selector: 'app-quest-listar',
   standalone: true,
   imports: [],
-  templateUrl: './quest-listar.html',
-  styleUrl: './quest-listar.scss'
+  templateUrl: './quest-listar.html'
 })
 export class QuestListarComponent {
-  quests = input<Quest[]>([]);
-  
-  aoSelecionar = output<Quest>();
+  questService = inject(QuestService);
+
+  selecionar(quest: any) {
+    this.questService.questSelecionada.set(quest);
+  }
 }
