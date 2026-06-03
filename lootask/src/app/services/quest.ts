@@ -10,8 +10,6 @@ export class QuestService {
     { id: 2, texto: 'Pesquisar sobre properties', xp: 30, feita: true }
   ]);
 
-  questSelecionada = signal<Quest | null>(null);
-
   get listaDeQuests() {
     return this._listaDeQuests.asReadonly();
   }
@@ -28,8 +26,5 @@ export class QuestService {
 
   removerQuest(id: number) {
     this._listaDeQuests.update(quests => quests.filter(q => q.id !== id));
-    if (this.questSelecionada()?.id === id) {
-      this.questSelecionada.set(null);
-    }
   }
 }

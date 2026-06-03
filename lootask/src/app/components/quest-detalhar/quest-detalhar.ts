@@ -1,20 +1,20 @@
-import { Component, inject } from '@angular/core';
-import { QuestService } from '../../services/quest';
+import { Component, input } from '@angular/core';
+import { Quest } from '../../models/quest.models';
 
 @Component({
   selector: 'app-quest-detalhar',
   standalone: true,
   template: `
-    @if (questService.questSelecionada(); as q) {
+    @if (quest()) {
       <div style="background: #e8eaf6; padding: 15px; border-radius: 10px;">
         <h3>📜 Detalhes da Missão</h3>
-        <p><strong>Nome:</strong> {{ q.texto }}</p>
-        <p><strong>Recompensa:</strong> {{ q.xp }} XP</p>
-        <p><strong>Status:</strong> {{ q.feita ? 'Concluída' : 'Em andamento' }}</p>
+        <p><strong>Nome:</strong> {{ quest()?.texto }}</p>
+        <p><strong>Recompensa:</strong> {{ quest()?.xp }} XP</p>
+        <p><strong>Status:</strong> {{ quest()?.feita ? 'Concluída' : 'Em andamento' }}</p>
       </div>
     }
   `
 })
 export class QuestDetalharComponent {
-  questService = inject(QuestService);
+  quest = input<Quest | null>(null);
 }

@@ -1,17 +1,18 @@
-import { Component, inject, effect, signal } from '@angular/core';
+import { Component, inject, effect, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { QuestService } from '../../services/quest';
+import { Quest } from '../../models/quest.models';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
-import { InputTextModule } from 'primeng/inputtext';   
+import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 
 @Component({
   selector: 'app-quest-alterar',
   standalone: true,
-  imports: [FormsModule, ButtonModule, CheckboxModule, InputTextModule, InputNumberModule], // ✨ Adicionados aqui
+  imports: [FormsModule, ButtonModule, CheckboxModule, InputTextModule, InputNumberModule],
   template: `
-    @if (questService.questSelecionada(); as q) {
+    @if (quest()) {
       <div style="background: #f3e5f5; padding: 20px; border-radius: 15px; border: 3px solid #e1bee7; margin-top: 15px;">
         <h3 style="color: #4a148c; margin-top: 0;">🛠️ Editar / Remover Quest</h3>
         
@@ -31,9 +32,8 @@ import { InputNumberModule } from 'primeng/inputnumber';
         </div>
         
         <div style="display: flex; gap: 10px;">
-          <button pButton label="Salvar Alterações" icon="pi pi-check" class="p-button-success" (click)="salvar(q.id)"></button>
-          
-          <button pButton label="Excluir Missão" icon="pi pi-trash" class="p-button-danger" style="background: #d32f2f;" (click)="deletar(q.id)"></button>
+          <button pButton label="Salvar Alterações" icon="pi pi-check" class="p-button-success" (click)="salvar()"></button>
+          <button pButton label="Excluir Missão" icon="pi pi-trash" class="p-button-danger" style="background: #d32f2f;" (click)="deletar()"></button>
         </div>
       </div>
     }
@@ -41,14 +41,17 @@ import { InputNumberModule } from 'primeng/inputnumber';
 })
 export class QuestAlterarComponent {
   questService = inject(QuestService);
+  
+  quest = input<Quest | null>(null);
+  aoConcluir = output<void>(); 
 
   textoTemp = signal('');
-  xpTemp = signal<number | null>(null); // ✨ Criado o signal do XP
+  xpTemp = signal<number | null>(null);
   feitaTemp = signal(false);
 
   constructor() {
     effect(() => {
-      const q = this.questService.questSelecionada();
+      const q = this.quest();
       if (q) {
         this.textoTemp.set(q.texto);
         this.xpTemp.set(q.xp);
@@ -57,16 +60,26 @@ export class QuestAlterarComponent {
     });
   }
 
-  salvar(id: any) {
-    this.questService.atualizarQuest({
-      id: id,
-      texto: this.textoTemp(),
-      xp: this.xpTemp() || 0, 
-      feita: this.feitaTemp()
-    });
+  salvar() {
+    const q = this.quest();
+    if (q) {
+      this.questService.atualizarQuest({
+        id: q.id,
+        texto: this.textoTemp(),
+        xp: this.xpTemp() || 0,
+        feita: this.feitaTemp()
+      });
+      
+      this.aoConcluir.emit(); 
+    }
   }
 
-  deletar(id: any) {
-    this.questService.removerQuest(id);
+  deletar() {
+    const q = this.quest();
+    if (q && q.id) {
+      this.questService.removerQuest(q.id);
+      
+      this.aoConcluir.emit(); 
+    }
   }
 }
