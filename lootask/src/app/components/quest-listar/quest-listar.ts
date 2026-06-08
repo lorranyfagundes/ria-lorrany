@@ -1,18 +1,23 @@
-import { Component, inject, output } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router'; // Importamos o Router
 import { QuestService } from '../../services/quest';
 
-@Component({ 
-  selector: 'app-quest-listar', 
-  standalone: true, 
-  imports: [], 
-  templateUrl: './quest-listar.html' 
+@Component({
+  selector: 'app-quest-listar',
+  standalone: true,
+  imports: [RouterLink], 
+  templateUrl: './quest-listar.html'
 })
 export class QuestListarComponent {
   questService = inject(QuestService);
-  
-  aoSelecionar = output<any>(); 
+  router = inject(Router);
 
-  selecionar(quest: any) {
-    this.aoSelecionar.emit(quest);
+  irParaDetalhe(id: number) {
+    this.router.navigate(['/quests', id, 'detalhe']);
+  }
+
+  irParaAlterar(id: number, event: Event) {
+    event.stopPropagation(); 
+    this.router.navigate(['/quests', id, 'alterar']);
   }
 }

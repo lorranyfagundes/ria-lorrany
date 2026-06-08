@@ -1,17 +1,22 @@
 <div style="background: rgba(255, 255, 255, 0.7); padding: 20px; border-radius: 20px;">
-  <h2 style="color: #4a148c; margin-top: 0;">Lista de Quests</h2>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+    <h2 style="color: #4a148c; margin: 0;">Lista de Quests</h2>
+    <button routerLink="/quests/novo" style="background: #d81b60; color: white; border: none; padding: 8px 15px; border-radius: 10px; cursor: pointer;">+ Nova Quest</button>
+  </div>
   
   @for (q of questService.listaDeQuests(); track q.id) {
     <div style="padding: 10px; background: white; margin-bottom: 10px; border-radius: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;" 
-         (click)="selecionar(q)">
+         (click)="irParaDetalhe(q.id!)">
       
       <span [style.textDecoration]="q.feita ? 'line-through' : 'none'" 
-            [style.color]="q.feita ? '#a0a0a0' : '#4a148c'"
-            style="transition: all 0.3s ease;">
+            [style.color]="q.feita ? '#a0a0a0' : '#4a148c'">
         {{ q.texto }}
       </span>
       
-      <span style="background: #f8bbd0; color: #d81b60; padding: 2px 8px; border-radius: 20px; font-size: 14px;">+{{ q.xp }} XP</span>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <span style="background: #f8bbd0; color: #d81b60; padding: 2px 8px; border-radius: 20px; font-size: 14px;">+{{ q.xp }} XP</span>
+        <button (click)="irParaAlterar(q.id!, $event)" style="background: #e1bee7; border: none; border-radius: 5px; padding: 3px 8px; cursor: pointer; color: #4a148c;">✏️</button>
+      </div>
     </div>
   }
 </div>

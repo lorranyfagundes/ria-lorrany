@@ -27,4 +27,9 @@ export class QuestService {
   removerQuest(id: number) {
     this._listaDeQuests.update(quests => quests.filter(q => q.id !== id));
   }
+
+  buscarPorId(id: number): Quest | undefined {
+    return this._listaDeQuests().find(q => q.id === id);
+  }
+
 }
