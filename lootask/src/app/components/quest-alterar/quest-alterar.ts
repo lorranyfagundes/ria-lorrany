@@ -1,76 +1,87 @@
-import { Component, inject, input, effect, signal } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { QuestService } from '../../services/quest';
-import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputNumberModule } from 'primeng/inputnumber';
 
 @Component({
   selector: 'app-quest-alterar',
   standalone: true,
-  imports: [FormsModule, ButtonModule, CheckboxModule, InputTextModule, InputNumberModule, RouterLink],
+  imports: [FormsModule, RouterLink],
   template: `
-    <div style="background: #f3e5f5; padding: 20px; border-radius: 15px; border: 3px solid #e1bee7;">
-      <h3 style="color: #4a148c; margin-top: 0;">🛠️ Editar / Remover Quest</h3>
+    <div style="background: white; padding: 20px; border-radius: 15px; border: 3px solid #b39ddb; max-width: 400px; margin: 20px auto;">
+      <h3 style="color: #512da8; display: flex; align-items: center; gap: 8px;">🛠️ Editar / Remover Quest</h3>
       
-      <div style="margin-bottom: 12px;">
-        <input type="text" pInputText [ngModel]="textoTemp()" (ngModelChange)="textoTemp.set($event)" style="width: 100%;"/>
+      <div style="margin-bottom: 10px;">
+        <label style="display: block; font-weight: bold; margin-bottom: 5px; color: #512da8;">Nome da Quest</label>
+        <input type="text" [(ngModel)]="textoTemp" style="width: 100%; padding: 8px; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box;" />
       </div>
-      
-      <div style="margin-bottom: 12px;">
-        <p-inputNumber [ngModel]="xpTemp()" (ngModelChange)="xpTemp.set($event)" placeholder="XP de recompensa" style="width: 100%;"></p-inputNumber>
-      </div>
-      
+
       <div style="margin-bottom: 15px;">
-        <label style="display: flex; align-items: center; gap: 8px; color: #4a148c; cursor: pointer;">
-          <p-checkbox [binary]="true" [ngModel]="feitaTemp()" (ngModelChange)="feitaTemp.set($event)"></p-checkbox>
-          Marcar como concluída
-        </label>
+        <label style="display: block; font-weight: bold; margin-bottom: 5px; color: #512da8;">XP de recompensa</label>
+        <input type="number" [(ngModel)]="xpTemp" style="width: 100%; padding: 8px; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box;" />
       </div>
-      
-      <div style="display: flex; gap: 10px;">
-        <button pButton label="Salvar Alterações" icon="pi pi-check" class="p-button-success" (click)="salvar()"></button>
-        <button pButton label="Excluir Missão" icon="pi pi-trash" class="p-button-danger" style="background: #d32f2f;" (click)="deletar()"></button>
-        <button pButton label="Cancelar" class="p-button-secondary" routerLink="/quests"></button>
+
+      <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+        <input type="checkbox" id="concluida" [(ngModel)]="feitaTemp" style="transform: scale(1.2); cursor: pointer;" />
+        <label for="concluida" style="cursor: pointer; user-select: none;">Marcar como concluída</label>
+      </div>
+
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button (click)="salvar()" style="background: #4caf50; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold;">✔️ Salvar</button>
+        <button (click)="deletar()" style="background: #f44336; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold;">🗑️ Excluir</button>
+        <button routerLink="/quests" style="background: #666; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">Cancelar</button>
       </div>
     </div>
   `
 })
-export class QuestAlterarComponent {
+export class QuestAlterarComponent implements OnInit {
   questService = inject(QuestService);
   router = inject(Router);
+  route = inject(ActivatedRoute);
 
-  id = input<string>();
+  // ✨ MUDAMOS PARA 'any' PARA ACEITAR LETRAS E NÚMEROS DO JSON-SERVER
+  questId: any; 
 
-  textoTemp = signal('');
-  xpTemp = signal<number | null>(null);
-  feitaTemp = signal(false);
+  textoTemp = '';
+  xpTemp: number | null = null;
+  feitaTemp = false;
 
-  constructor() {
-    effect(() => {
-      const q = this.questService.buscarPorId(Number(this.id()));
-      if (q) {
-        this.textoTemp.set(q.texto);
-        this.xpTemp.set(q.xp);
-        this.feitaTemp.set(q.feita);
-      }
-    });
+  ngOnInit() {
+    // ✨ TIRAMOS O Number() PARA NÃO QUEBRAR O ID AUTOMÁTICO
+    this.questId = this.route.snapshot.paramMap.get('id');
+
+    if (this.questId && this.questId !== 'undefined') {
+      this.questService.buscarPorId(this.questId).subscribe(q => {
+        if (q) {
+          this.textoTemp = q.texto;
+          this.xpTemp = q.xp;
+          this.feitaTemp = q.feita;
+        }
+      });
+    }
   }
 
   salvar() {
-    this.questService.atualizarQuest({ 
-      id: Number(this.id()),
-      texto: this.textoTemp(),
-      xp: this.xpTemp() || 0,
-      feita: this.feitaTemp()
-    });
-    this.router.navigate(['/quests']); 
+    if (this.textoTemp.trim()) {
+      this.questService.atualizar({
+        id: this.questId, // Agora o ID vai certinho, com letras ou não
+        texto: this.textoTemp,
+        xp: this.xpTemp || 0,
+        feita: this.feitaTemp
+      }).subscribe({
+        next: () => this.router.navigate(['/quests']),
+        error: (err: any) => console.error('Erro ao atualizar quest:', err)
+      });
+    }
   }
 
   deletar() {
-    this.questService.removerQuest(Number(this.id()));
-    this.router.navigate(['/quests']);
+    const confirmar = confirm('Tem certeza que deseja deletar esta quest?');
+    if (confirmar) {
+      this.questService.remover(this.questId).subscribe({
+        next: () => this.router.navigate(['/quests']),
+        error: (err: any) => console.error('Erro ao deletar quest:', err)
+      });
+    }
   }
 }

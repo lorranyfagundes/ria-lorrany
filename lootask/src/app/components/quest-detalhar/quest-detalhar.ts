@@ -1,6 +1,7 @@
-import { Component, inject, input, computed } from '@angular/core';
+import { Component, inject, input, signal, effect } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { QuestService } from '../../services/quest';
+import { Quest } from '../../models/quest.models';
 
 @Component({
   selector: 'app-quest-detalhar',
@@ -13,20 +14,29 @@ import { QuestService } from '../../services/quest';
         <p><strong>Nome:</strong> {{ quest()?.texto }}</p>
         <p><strong>Recompensa:</strong> {{ quest()?.xp }} XP</p>
         <p><strong>Status:</strong> {{ quest()?.feita ? 'Concluída' : 'Em andamento' }}</p>
-        
         <button routerLink="/quests" style="margin-top: 10px; background: #3f51b5; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">Voltar</button>
       </div>
     } @else {
-      <p>Quest não encontrada.</p>
+      <p style="text-align: center;">A carregar detalhes da missão...</p>
     }
   `
 })
 export class QuestDetalharComponent {
   questService = inject(QuestService);
-
   id = input<string>(); 
+  
+  quest = signal<Quest | null>(null); // Signal para guardar o resultado do servidor
 
-  quest = computed(() => {
-    return this.questService.buscarPorId(Number(this.id()));
-  });
+  constructor() {
+    // Monitoriza o ID da URL. Se mudar, faz o pedido HTTP
+    effect(() => {
+      const currentId = Number(this.id());
+      if (currentId) {
+        this.questService.buscarPorId(currentId).subscribe({
+          next: (data) => this.quest.set(data),
+          error: (err) => console.error('Erro ao buscar quest', err)
+        });
+      }
+    });
+  }
 }

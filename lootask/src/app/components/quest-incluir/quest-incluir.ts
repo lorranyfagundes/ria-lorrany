@@ -1,30 +1,27 @@
-import { Component, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { QuestService } from '../../services/quest';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { ButtonModule } from 'primeng/button';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-quest-incluir',
   standalone: true,
-  imports: [FormsModule, InputTextModule, InputNumberModule, ButtonModule, RouterLink],
+  imports: [RouterLink, FormsModule],
   template: `
-    <div style="background: #fff; padding: 20px; border-radius: 15px; border: 3px solid #f8bbd0; margin-bottom: 20px;">
-      <h3 style="color: #d81b60; margin-top: 0;">🎯 Nova Quest</h3>
+    <div style="background: white; padding: 20px; border-radius: 15px; border: 3px solid #ffb7d5; max-width: 400px; margin: 20px auto;">
+      <h3 style="color: #ff2a6d; display: flex; align-items: center; gap: 8px;">🎯 Nova Quest</h3>
       
-      <div style="margin-bottom: 12px;">
-        <input type="text" pInputText [ngModel]="novaQuestTexto()" (ngModelChange)="novaQuestTexto.set($event)" placeholder="Digite a missão..." style="width: 100%;" />
+      <div style="margin-bottom: 10px;">
+        <input type="text" [(ngModel)]="novaQuestTexto" placeholder="Nome da quest" style="width: 100%; padding: 8px; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box;" />
       </div>
 
-      <div style="margin-bottom: 12px; display: flex; gap: 10px; align-items: center;">
-        <p-inputNumber [ngModel]="novaQuestXp()" (ngModelChange)="novaQuestXp.set($event)" placeholder="XP de recompensa" style="flex: 1;"></p-inputNumber>
+      <div style="margin-bottom: 15px;">
+        <input type="number" [(ngModel)]="novaQuestXp" placeholder="XP" style="width: 100%; padding: 8px; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box;" />
       </div>
 
       <div style="display: flex; gap: 10px;">
-        <button pButton label="Aceitar" icon="pi pi-plus" class="p-button-pink" (click)="enviar()"></button>
-        <button pButton label="Voltar" class="p-button-secondary" routerLink="/quests"></button>
+        <button (click)="enviar()" style="background: #ff2a6d; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold;">Aceitar</button>
+        <button routerLink="/quests" style="background: #666; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">Voltar</button>
       </div>
     </div>
   `
@@ -32,18 +29,22 @@ import { ButtonModule } from 'primeng/button';
 export class QuestIncluirComponent {
   questService = inject(QuestService);
   router = inject(Router);
-  
-  novaQuestTexto = signal<string>('');
-  novaQuestXp = signal<number | null>(null);
+
+  // Variáveis super simples, sem signal, pro ngModel funcionar liso de primeira:
+  novaQuestTexto = '';
+  novaQuestXp: number | null = null;
 
   enviar() {
-    if (this.novaQuestTexto().trim()) {
-      this.questService.adicionarQuest({
-        texto: this.novaQuestTexto(),
-        xp: this.novaQuestXp() || 0,
+    if (this.novaQuestTexto.trim()) {
+      // ✨ Usando o método inserir() do seu novo Service
+      this.questService.inserir({
+        texto: this.novaQuestTexto,
+        xp: this.novaQuestXp || 0,
         feita: false
+      }).subscribe({
+        next: () => this.router.navigate(['/quests']),
+        error: (err: any) => console.error('Erro ao salvar no servidor:', err)
       });
-      this.router.navigate(['/quests']);
     }
   }
 }
