@@ -25,10 +25,10 @@ export class QuestDetalharComponent {
   questService = inject(QuestService);
   id = input<string>(); 
   
-  quest = signal<Quest | null>(null); // Signal para guardar o resultado do servidor
+  quest = signal<Quest | null>(null);
 
   constructor() {
-    // Monitoriza o ID da URL. Se mudar, faz o pedido HTTP
+  
     effect(() => {
       const currentId = Number(this.id());
       if (currentId) {

@@ -2,9 +2,33 @@
   "quests": [
     {
       "id": "HLHmJy3-eFY",
-      "texto": "lololo",
+      "texto": "teste",
       "xp": 11,
       "feita": true
+    },
+    {
+      "texto": "beber água",
+      "xp": 33,
+      "feita": false,
+      "id": "IHRrLWUIlGE"
+    },
+    {
+      "id": "26pArOQ-s4Y",
+      "texto": "aula pds",
+      "xp": 78,
+      "feita": false
+    },
+    {
+      "texto": "aula",
+      "xp": 33,
+      "feita": false,
+      "id": "ZwReiulVTmU"
+    },
+    {
+      "texto": "entregar última atv RIA",
+      "xp": 55,
+      "feita": false,
+      "id": "LZaHf3qK_EI"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

@@ -9,7 +9,6 @@ import { Quest } from '../models/quest.models';
 export class QuestService {
   private http = inject(HttpClient);
   
-  // ⚠️ Cole aqui a SUA URL pública do Codespaces (aquela da porta 3000)
   private apiUrl = 'https://sturdy-succotash-746qv4wxqp43wxrp-3000.app.github.dev/quests'; 
 
   listar(): Observable<Quest[]> {

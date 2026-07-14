@@ -3,6 +3,7 @@
 - npm install primeng primeicons
 - npm install @primeng/themes
 - npm install zone.js
+- npx json-server --watch db.json --port 3000
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.13.
 

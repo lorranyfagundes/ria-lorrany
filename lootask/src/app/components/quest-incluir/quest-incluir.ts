@@ -30,13 +30,11 @@ export class QuestIncluirComponent {
   questService = inject(QuestService);
   router = inject(Router);
 
-  // Variáveis super simples, sem signal, pro ngModel funcionar liso de primeira:
   novaQuestTexto = '';
   novaQuestXp: number | null = null;
 
   enviar() {
     if (this.novaQuestTexto.trim()) {
-      // ✨ Usando o método inserir() do seu novo Service
       this.questService.inserir({
         texto: this.novaQuestTexto,
         xp: this.novaQuestXp || 0,

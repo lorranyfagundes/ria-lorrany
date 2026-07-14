@@ -47,7 +47,6 @@ export class QuestAlterarComponent implements OnInit {
   feitaTemp = false;
 
   ngOnInit() {
-    // ✨ TIRAMOS O Number() PARA NÃO QUEBRAR O ID AUTOMÁTICO
     this.questId = this.route.snapshot.paramMap.get('id');
 
     if (this.questId && this.questId !== 'undefined') {
@@ -64,7 +63,7 @@ export class QuestAlterarComponent implements OnInit {
   salvar() {
     if (this.textoTemp.trim()) {
       this.questService.atualizar({
-        id: this.questId, // Agora o ID vai certinho, com letras ou não
+        id: this.questId,
         texto: this.textoTemp,
         xp: this.xpTemp || 0,
         feita: this.feitaTemp

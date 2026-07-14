@@ -13,11 +13,9 @@ export class QuestListarComponent implements OnInit {
   questService = inject(QuestService);
   router = inject(Router);
 
-  // ✨ O Signal com a lista de missões agora vive aqui no componente!
   quests = signal<Quest[]>([]);
 
   ngOnInit() {
-    // ✨ Chama o método listar() do service simplificado e guarda o resultado no signal
     this.questService.listar().subscribe({
       next: (dados) => this.quests.set(dados),
       error: (err) => console.error('Erro ao carregar a lista:', err)
