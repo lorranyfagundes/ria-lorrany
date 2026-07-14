@@ -3,13 +3,16 @@ import { QuestListarComponent } from './components/quest-listar/quest-listar';
 import { QuestIncluirComponent } from './components/quest-incluir/quest-incluir';
 import { QuestDetalharComponent } from './components/quest-detalhar/quest-detalhar';
 import { QuestAlterarComponent } from './components/quest-alterar/quest-alterar';
+import { LoginComponent } from './components/login/login';
+import { authGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'quests', pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' }, // Agora vai pro login primeiro
+  { path: 'login', component: LoginComponent },
   
-  { path: 'quests', component: QuestListarComponent },
-  { path: 'quests/novo', component: QuestIncluirComponent },
-  
-  { path: 'quests/:id/detalhe', component: QuestDetalharComponent },
-  { path: 'quests/:id/alterar', component: QuestAlterarComponent }
+  // Rotas protegidas (com o Guard):
+  { path: 'quests', component: QuestListarComponent, canActivate: [authGuard] },
+  { path: 'quests/novo', component: QuestIncluirComponent, canActivate: [authGuard] },
+  { path: 'quests/:id/detalhe', component: QuestDetalharComponent, canActivate: [authGuard] },
+  { path: 'quests/:id/alterar', component: QuestAlterarComponent, canActivate: [authGuard] }
 ];

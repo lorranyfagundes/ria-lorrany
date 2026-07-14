@@ -1,12 +1,6 @@
 {
   "quests": [
     {
-      "id": "HLHmJy3-eFY",
-      "texto": "teste",
-      "xp": 11,
-      "feita": true
-    },
-    {
       "texto": "beber água",
       "xp": 33,
       "feita": false,
@@ -16,13 +10,13 @@
       "id": "26pArOQ-s4Y",
       "texto": "aula pds",
       "xp": 78,
-      "feita": false
+      "feita": true
     },
     {
-      "texto": "aula",
+      "id": "ZwReiulVTmU",
+      "texto": "prova pabd",
       "xp": 33,
-      "feita": false,
-      "id": "ZwReiulVTmU"
+      "feita": true
     },
     {
       "texto": "entregar última atv RIA",
